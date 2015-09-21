@@ -1,0 +1,21 @@
+<p>The project below was inspected and it was noted to potentially have a safety deficiency. Please address this immediately or send me a reply email noting that this issue was resolved</p>
+<br/><br/><br/>
+<strong>Project: </strong> <%= @proj_name %>
+<br/>
+<strong>Category: </strong> <%= @cname %>
+<br/>
+<strong>Question: </strong> <%= @body %>
+<br/>
+<strong>Notes: </strong><%= @answer.notes %>
+<br/><br/><br/>
+<% if @answer.file.present?%>
+To view file: <%= link_to "click here",  "http://codingqna.com:3000#{@file}", target: "_blank" %>
+<% end %>
+<br/><br/><br/><br/>
+--Regards
+<p><%= @user.first_name + " " + @user.last_name %><%= %></p>
+<p><%= @user.company %></p>
+
+	</body>	
+</html>
+

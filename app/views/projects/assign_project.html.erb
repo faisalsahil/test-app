@@ -1,0 +1,41 @@
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#project_userid').multiselect();
+  });
+</script>
+<%#= hidden_field_tag 'active_class', 'create_project'%>
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3">
+  <h1><%= @project.name %></h1>
+    <%= form_for @project,:url=>add_users_projects_path, html: { class: 'well form-horizontal', role: 'form', method: :post} do |f| %>
+      <%= hidden_field_tag 'projectid', @project.id %>
+      <fieldset>
+        <% if @project.errors.any? %>
+          <div class="alert alert-danger">
+            <h4><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h4>
+
+            <ul>
+            <% @project.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+  
+        <% if current_user.role == "client" %>
+          <div class="form-group">
+            <%= f.label :cars, "Add user", class: "col-sm-3 control-label" %>
+            <div class="col-sm-9">
+              <%= f.select(:userid, options_for_select(current_user.subordinates.collect {|x| [x.email, x.id]}), {}, {multiple: "multiple"}) %>
+            </div>
+          </div>
+        <% end %>
+      </fieldset>
+
+      <div class="col-sm-offset-3">
+        <%= f.submit 'Save', class: "btn btn-primary" %>
+
+      </div>
+    <% end %>
+  </div>
+</div>

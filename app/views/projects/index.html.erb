@@ -1,0 +1,55 @@
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if ( $('#inc_id').length > 0 && $('#inc_id').val() > 0 ){
+      window.location.href = '/incidents/'+ $('#inc_id').val() +'/send_new_incident.pdf';
+    }
+
+  });  
+</script>
+<%= hidden_field_tag 'active_class', 'all_projects'%>
+<% if @projects.present? %>  
+  <%#= link_to "Reports", report_projects_path, class: "btn btn-sm btn-info pull-right" ,style: "margin-bottom: 8px;"%>
+  <h1>Project List</h1>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <th>Project Name</th>
+      <th>Contact Info</th>
+      <th>Address</th>
+      <th>Action</th>
+    </thead>  
+    <tbody>
+      <% @projects.each do |project|%>
+        <tr>
+          <% if project.reports && project.reports.last && project.reports.last.answers && project.reports.last.answers.where(status: 2).present? %> 
+          <!-- #report_project -->
+          <td><%= link_to project.name, edit_project_path(project),style: "color: red;"%></td>
+          <% else %>
+          <td><%= link_to project.name, edit_project_path(project)%></td>
+              <!-- project_path(project) -->
+          <% end %>
+          <td><%= project.contact_info %></td>
+          <td><%= project.address %></td>
+          <td>
+            <%#= link_to "show", project_path(project), class: "btn btn-default btn-sm" %>
+            <%#= link_to "Download Detailed Report", detail_report_project_path(project, { format: :pdf}), class: "btn btn-sm btn-info" %>
+            <%#= link_to "Send Incident Report", project_incidents_path(project), class: "btn btn-sm btn-primary" %>
+            <%= link_to "Incident Report", project_incidents_path(project), class: "btn btn-xs btn-success" %>
+            <%= link_to "Checklists", report_project_path(project), class: "btn btn-xs btn-info"%>       
+            <%= link_to "users", users_project_path(project), class: "btn btn-xs btn-warning" %>
+            <%#= link_to "View Checklists", project_reports_path(project), class: "btn btn-sm btn-warning" %>
+            <% if current_user.role == "client" %>
+              <%= link_to "Assign to user", assign_project_project_path(project), class: "btn btn-xs btn-primary" %>
+            <% end %>  
+            <%= link_to 'Delete', project, data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-xs btn-danger" %>
+            </td>
+        </tr>
+      <% end %>   
+    </tbody>  
+  </table> 
+  <% if params[:inc].present? && Incident.find(params[:inc]).present? && Incident.find(params[:inc]).downloaded.blank? %>
+    <%= hidden_field_tag :inc_id, params[:inc] %>
+  <% end %>
+<% else %>
+  <b>No Project Present</b>
+<% end %>   
